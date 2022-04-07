@@ -1,0 +1,1 @@
+tensorboard data for each run is located here. completed runs will reference a specific folder. The folders are labeled numerically with the algorithm used.
