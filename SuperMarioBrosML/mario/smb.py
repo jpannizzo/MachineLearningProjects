@@ -68,7 +68,8 @@ env = VecFrameStack(env, 4, channels_order='last')
 #model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=0.000001, n_steps=512)
 
 #comment out CnnPolicy line above and use following for loading already saved data
-model = PPO.load('./completed/completed_PPO_4_initialdata_TOTALSTEPS_1000000')
+d = os.path.dirname(os.getcwd())
+model = PPO.load(d+"\\completed\\completed_PPO_4_initialdata_TOTALSTEPS_1000000")
 model.set_env(env)
 
 #train the AI model
