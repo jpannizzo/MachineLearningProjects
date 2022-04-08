@@ -31,7 +31,7 @@ LOG_DIR = './logs/'
 
 #setup model saving callback
 #saves every 10,000 steps
-callback = TrainAndLoggingCallback(check_freq=10000, save_path=CHECKPOINT_DIR)
+callback = TrainAndLoggingCallback(check_freq=50000, save_path=CHECKPOINT_DIR)
 
 #Setup Environment
 #Create base env
@@ -62,17 +62,17 @@ env = VecFrameStack(env, 4, channels_order='last')
 #   tensorboard_log keeps the logs for use in tensorflow
 #   learning_rate is very important. longer time is more stable where shorter time may create an unreliable AI. need to look into more
 #   n_steps = frames to wait per game before we update neural network. need to look into more and tinker with
-model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=0.000001, n_steps=512)
+#model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=0.000001, n_steps=512)
 
 #MlpPolicy is very good for tabular data XLS, CSV, JSON data. It could still be used as the neural network for the game.
 #model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=0.000001, n_steps=512)
 
-#comment out line 61 and use following for loading already saved data
-#model = PPO.load('./train/best_model_XXXXXX')
-#model.set_env(env)
+#comment out CnnPolicy line above and use following for loading already saved data
+model = PPO.load('./completed/completed_PPO_4_initialdata_TOTALSTEPS_1000000')
+model.set_env(env)
 
 #train the AI model
-model.learn(total_timesteps=1000000, callback=callback)
+model.learn(total_timesteps=2000000, callback=callback)
 model.save('latestmodel')
 #Create a restart flag.
 done = True
