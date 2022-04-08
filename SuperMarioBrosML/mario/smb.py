@@ -1,5 +1,5 @@
 '''
-TOTAL TIMESTEPS RUN SO FAR: 1,000,000
+TOTAL TIMESTEPS RUN SO FAR: 1,350,000
 '''
 
 #Import the game, joypad, and simplified controls
@@ -69,22 +69,18 @@ env = VecFrameStack(env, 4, channels_order='last')
 
 #comment out CnnPolicy line above and use following for loading already saved data
 d = os.path.dirname(os.getcwd())
-model = PPO.load(d+"\\completed\\completed_PPO_4_initialdata_TOTALSTEPS_1000000")
+model = PPO.load(d+"\\completed\\completed_PPO_1_cont_RuntimeSteps_350000")
 model.set_env(env)
 
 #train the AI model
-model.learn(total_timesteps=2000000, callback=callback)
+model.learn(total_timesteps=5000000, callback=callback)
 model.save('latestmodel')
-#Create a restart flag.
-done = True
-#runs the ai after training
-#loop through each frame in the game
-for step in range(100000):
-    #initial game start
-    if done:
-        #start game
-        env.reset()
-    # env.action_space.sample() allows me to do random actions from SIMPLE_MOVEMENT
-    state, reward, done, info = env.step(env.action_space.sample())
+
+#run the game to show the latest model
+#need to break/stop to end the process
+state = env.reset()
+while True:
+
+    action, _ = model.predict(state)
+    state, reward, done, info = env.step(action)
     env.render()
-env.close()
