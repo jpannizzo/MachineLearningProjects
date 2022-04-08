@@ -24,7 +24,7 @@ from TrainAndLoggingCallback import TrainAndLoggingCallback
 #input model number at X's
 #model_num = input("Model Number: ")
 #load model
-model = PPO.load('./train/best_model_1000000')
+model = PPO.load('./train/best_model_50000')
 
 #Setup Environment
 #Create base env
