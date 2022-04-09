@@ -1,5 +1,6 @@
 '''
-TOTAL TIMESTEPS RUN SO FAR: 1,350,000
+TOTAL TIMESTEPS RUN SO FAR: 5,600,000
+TOTAL TIME RUN: ~19 hrs
 '''
 
 #Import the game, joypad, and simplified controls
@@ -30,7 +31,7 @@ CHECKPOINT_DIR = './train/'
 LOG_DIR = './logs/'
 
 #setup model saving callback
-#saves every 10,000 steps
+#saves every XX,000 steps
 callback = TrainAndLoggingCallback(check_freq=50000, save_path=CHECKPOINT_DIR)
 
 #Setup Environment
@@ -67,14 +68,17 @@ env = VecFrameStack(env, 4, channels_order='last')
 #MlpPolicy is very good for tabular data XLS, CSV, JSON data. It could still be used as the neural network for the game.
 #model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=0.000001, n_steps=512)
 
-#comment out CnnPolicy line above and use following for loading already saved data
-d = os.path.dirname(os.getcwd())
-model = PPO.load(d+"\\completed\\completed_PPO_1_cont_RuntimeSteps_350000")
-model.set_env(env)
+#update learning rate. typically between 0.1 and 0.000001. 
+#custom_objects = { 'learning_rate': 0.00001}
 
+d = os.path.dirname(os.getcwd())
+
+#comment out CnnPolicy line above and use following for loading already saved data
+model = PPO.load(d+"\\completed\\completed_PPO_6_cont_RuntimeSteps_4250000")
+model.set_env(env)
 #train the AI model
 model.learn(total_timesteps=5000000, callback=callback)
-model.save('latestmodel')
+model.save('/train/latestmodel')
 
 #run the game to show the latest model
 #need to break/stop to end the process
