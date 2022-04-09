@@ -21,13 +21,15 @@ from stable_baselines3.common.callbacks import BaseCallback
 # import for improved saving model code
 from TrainAndLoggingCallback import TrainAndLoggingCallback
 
+d = os.path.dirname(os.getcwd())
+
 #load model
 #Change path to specific file
-model = PPO.load('./train/best_model_2800000')
+model = PPO.load('./train/best_model_3050000')
 
 #Setup Environment
 #Need to duplicate the training env
-env = gym_super_mario_bros.make('SuperMarioBros-v0')
+env = gym_super_mario_bros.make('SuperMarioBros-1-1-v0')
 env = JoypadSpace(env, SIMPLE_MOVEMENT)
 env = GrayScaleObservation(env, keep_dim=True)
 env = DummyVecEnv([lambda: env])

@@ -2,3 +2,4 @@ cuda-python
 nes_py
 gym_super_mario_bros==7.3
 stable_baselines3[extra]
+optuna
