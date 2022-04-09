@@ -1,6 +1,6 @@
 '''
-TOTAL TIMESTEPS RUN SO FAR: 8,650,000
-TOTAL TIME RUN: ~31 hrs
+TOTAL TIMESTEPS RUN SO FAR: 0
+TOTAL TIME RUN: 0 hrs
 '''
 
 #Import the game, joypad, and simplified controls
@@ -66,10 +66,11 @@ env = VecFrameStack(env, 4, channels_order='last')
 #   tensorboard_log keeps the logs for use in tensorflow
 #   learning_rate is very important. longer time is more stable where shorter time may create an unreliable AI. need to look into more
 #   n_steps = frames to wait per game before we update neural network. need to look into more and tinker with
-model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=0.000001, n_steps=512)
+#   device = cuda -> forces gPU usage instead of CPU. Should work by default and remove this if using CPU 
+#model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=0.000001, n_steps=512, device='cuda',)
 
 #MlpPolicy is very good for tabular data XLS, CSV, JSON data. It could still be used as the neural network for the game.
-#model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=0.000001, n_steps=512)
+#model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=0.000001, n_steps=512, device='cuda',)
 
 #update learning rate. typically between 0.1 and 0.000001. 
 #custom_objects = { 'learning_rate': 0.00001}
@@ -77,8 +78,8 @@ model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=
 d = os.path.dirname(os.getcwd())
 
 #comment out CnnPolicy line above and use following for loading already saved data
-#model = PPO.load(d+"\\completed\\completed_PPO_6_cont_RuntimeSteps_4250000")
-#model.set_env(env)
+model = PPO.load(d+"\\completed\\completed_PPO_6_cont_RuntimeSteps_4250000")
+model.set_env(env)
 #train the AI model
 model.learn(total_timesteps=1000000, callback=callback)
 model.save('/train/latestmodel')
@@ -87,7 +88,6 @@ model.save('/train/latestmodel')
 #need to break/stop to end the process
 state = env.reset()
 while True:
-
     action, _ = model.predict(state)
     state, reward, done, info = env.step(action)
     env.render()

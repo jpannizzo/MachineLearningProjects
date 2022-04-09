@@ -29,7 +29,7 @@ model = PPO.load('./train/best_model_3050000')
 
 #Setup Environment
 #Need to duplicate the training env
-env = gym_super_mario_bros.make('SuperMarioBros-1-1-v0')
+env = gym_super_mario_bros.make('SuperMarioBros-v0')
 env = JoypadSpace(env, SIMPLE_MOVEMENT)
 env = GrayScaleObservation(env, keep_dim=True)
 env = DummyVecEnv([lambda: env])
