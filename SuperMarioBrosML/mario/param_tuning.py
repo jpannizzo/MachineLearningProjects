@@ -56,6 +56,7 @@ def optimize_agent(trial):
         mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=5)
         env.close()
 
+        #save models
         SAVE_PATH = os.path.join(OPT_DIR, 'trial_{}_best_model'.format(trial.number))
         model.save(SAVE_PATH)
 
