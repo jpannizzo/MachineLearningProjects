@@ -1,7 +1,9 @@
 '''
-TOTAL TIMESTEPS RUN SO FAR: 0
-TOTAL TIME RUN: 0 hrs
+TOTAL TIMESTEPS RUN SO FAR: 100000
+TOTAL TIME RUN: .5 hrs
 '''
+#for string to dict
+import ast
 
 #Import the game, joypad, and simplified controls
 import gym_super_mario_bros
@@ -14,6 +16,8 @@ from gym.wrappers import GrayScaleObservation
 from stable_baselines3.common.vec_env import VecFrameStack, DummyVecEnv
 # Import Matplotlib to show the impact of framestacking
 from matplotlib import pyplot as plt
+#Display for monitoring
+from stable_baselines3.common.monitor import Monitor
 
 #Import RL dependencies
 #file management
@@ -21,7 +25,7 @@ import os
 # import PPO algo
 from stable_baselines3 import PPO
 # import base callbacks for saving models
-from stable_baselines3.common.callbacks import BaseCallback
+from stable_baselines3.common.callbacks import EvalCallback, CallbackList
 # import for improved saving model code
 from TrainAndLoggingCallback import TrainAndLoggingCallback
 
@@ -29,17 +33,14 @@ from TrainAndLoggingCallback import TrainAndLoggingCallback
 CHECKPOINT_DIR = './train/'
 #tensorflow log files. can see progress with tensor board
 LOG_DIR = './logs/'
-
-#setup model saving callback
-#saves every XX,000 steps
-callback = TrainAndLoggingCallback(check_freq=10000, save_path=CHECKPOINT_DIR)
-
-#add built in plotting for training
-
+#optimization dir
+OPT_DIR = './optimization/opt/'
 
 #Setup Environment
 #Create base env
 env = gym_super_mario_bros.make('SuperMarioBros-v0')
+#for monitoring log dir
+env = Monitor(env, LOG_DIR)
 #simplify controls of env
 """
 SIMPLE_MOVEMENT reduces action commands to the following
@@ -61,12 +62,35 @@ env = DummyVecEnv([lambda: env])
 #stack the frames
 env = VecFrameStack(env, 4, channels_order='last')
 
+#setup model saving callback
+#saves every XX,000 steps. send env for eval callback
+callback = TrainAndLoggingCallback(check_freq=20000, save_path=CHECKPOINT_DIR)
+#setup eval callback to evaluate model as it runs
+#When using HPO like optuna the model loaded in will have episode length mean and episode reward mean from the study that occured in param_tuning.py 
+#Those kick in at ~15k timesteps so this eval callback might not be necessary OR might be better to make them less frequent and increase the number of eval episodes
+eval_callback = EvalCallback(env, log_path=LOG_DIR, eval_freq=50000, deterministic=True, render=False)
+#callback list
+callback_list = CallbackList([callback, eval_callback])
+
+d = os.path.dirname(os.getcwd())
+
+#load optimization study
+param_file = d+"\\mario\\optimization\\logs\\best_params.txt"
+with open(param_file, 'r') as f:
+    string_params = f.read()
+#convert from string to dict
+model_params = ast.literal_eval(string_params)
+#remove truncated runs
+model_params['n_steps'] = model_params['n_steps']//64*64
+
 #create PPO model
-#CnnPolicy is very good at processing images
-#   tensorboard_log keeps the logs for use in tensorflow
-#   learning_rate is very important. longer time is more stable where shorter time may create an unreliable AI. need to look into more
-#   n_steps = frames to wait per game before we update neural network. need to look into more and tinker with
-#   device = cuda -> forces gPU usage instead of CPU. Should work by default and remove this if using CPU 
+'''
+CnnPolicy is very good at processing images
+   tensorboard_log keeps the logs for use in tensorflow
+   learning_rate is very important. longer time is more stable where shorter time may create an unreliable AI. need to look into more
+   n_steps = frames to wait per game before we update neural network. need to look into more and tinker with
+   device = cuda -> forces gPU usage instead of CPU. Should work by default and remove this if using CPU 
+'''
 #model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, learning_rate=0.000001, n_steps=512, device='cuda',)
 
 #MlpPolicy is very good for tabular data XLS, CSV, JSON data. It could still be used as the neural network for the game.
@@ -75,13 +99,13 @@ env = VecFrameStack(env, 4, channels_order='last')
 #update learning rate. typically between 0.1 and 0.000001. 
 #custom_objects = { 'learning_rate': 0.00001}
 
-d = os.path.dirname(os.getcwd())
+#create initial model + model_params
+model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, device='cuda', **model_params)
+#load opt model, replace this for continued training
+model.load(OPT_DIR+"trial_19_best_model", env)
 
-#comment out CnnPolicy line above and use following for loading already saved data
-model = PPO.load(d+"\\completed\\completed_PPO_6_cont_RuntimeSteps_4250000")
-model.set_env(env)
 #train the AI model
-model.learn(total_timesteps=1000000, callback=callback)
+model.learn(total_timesteps=5000000, callback=callback_list)
 model.save('/train/latestmodel')
 
 #run the game to show the latest model

@@ -58,19 +58,17 @@ def optimize_agent(trial):
         # Create algo 
         model = PPO('CnnPolicy', env, tensorboard_log=LOG_DIR, verbose=0, device='cuda', **model_params)
         #should use a min of 100k
-        model.learn(total_timesteps=30000)
-        #model.learn(total_timesteps=100000)
+        #model.learn(total_timesteps=30000)
+        model.learn(total_timesteps=100000)
 
         # Evaluate model 
         # n_eval_episodes is number of games to evaluate in. Increase this for better results
-        mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=5)
+        mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=20)
         env.close()
 
         #save models
         SAVE_PATH = os.path.join(OPT_DIR, 'trial_{}_best_model'.format(trial.number))
         model.save(SAVE_PATH)
-
-        #
 
         return mean_reward
 
@@ -79,7 +77,7 @@ def optimize_agent(trial):
 
 # Creating the experiment 
 study = optuna.create_study(direction='maximize')
-study.optimize(optimize_agent, n_trials=10, n_jobs=1)
+study.optimize(optimize_agent, n_trials=20, n_jobs=1)
 #study.optimize(optimize_agent, n_trials=100, n_jobs=1)
 
 best_param_results = study.best_params
