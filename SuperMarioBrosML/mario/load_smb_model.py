@@ -25,7 +25,7 @@ d = os.path.dirname(os.getcwd())
 
 #load model
 #Change path to specific file
-model = PPO.load('./optimization/opt/trial_19_best_model')
+model = PPO.load('./train/best_model_520000')
 
 #Setup Environment
 #Need to duplicate the training env
