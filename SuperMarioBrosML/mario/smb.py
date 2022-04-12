@@ -18,6 +18,8 @@ from stable_baselines3.common.vec_env import VecFrameStack, DummyVecEnv
 from matplotlib import pyplot as plt
 #Display for monitoring
 from stable_baselines3.common.monitor import Monitor
+# Bring in the eval policy method for metric calculation
+from stable_baselines3.common.evaluation import evaluate_policy
 
 #Import RL dependencies
 #file management
@@ -103,6 +105,9 @@ CnnPolicy is very good at processing images
 #model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, device='cuda', **model_params)
 #load opt model, replace this for continued training
 model = PPO.load("C:\\repos\MachineLearningProjects\SuperMarioBrosML\mario\completed\Agent2\cont_PPO_2_TimestepsRun_4900000", env)
+
+#add evalution so mean reward/mean len is tracked for non PPO models
+mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=20)
 
 #train the AI model
 model.learn(total_timesteps=3650000, callback=callback)

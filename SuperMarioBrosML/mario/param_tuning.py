@@ -57,6 +57,9 @@ def optimize_agent(trial):
 
         # Create algo 
         model = PPO('CnnPolicy', env, tensorboard_log=LOG_DIR, verbose=0, device='cuda', **model_params)
+        # Load existing model for tuning
+        # model = PPO.load("C:\\repos\MachineLearningProjects\SuperMarioBrosML\mario\completed\Agent2\cont_PPO_2_TimestepsRun_4900000", env)
+
         #should use a min of 100k
         #model.learn(total_timesteps=30000)
         model.learn(total_timesteps=100000)
