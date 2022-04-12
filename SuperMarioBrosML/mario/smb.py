@@ -111,7 +111,7 @@ mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=20)
 
 #train the AI model
 model.learn(total_timesteps=3650000, callback=callback)
-model.save('/train/latestmodel')
+model.save('./train/latestmodel')
 
 #run the game to show the latest model
 #need to break/stop to end the process
