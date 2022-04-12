@@ -23,6 +23,7 @@ class VizDoomGym(Env):
         super().__init__()
         #Setup Game
         self.game = DoomGame()
+        #these scenarios are taken from the vizdoom github repo. This will be replaced with full doom game when curriculm training is complete
         self.game.load_config('./github/ViZDoom/scenarios/basic.cfg')
 
         #Render frame logic
@@ -78,10 +79,11 @@ class VizDoomGym(Env):
         #recolor to grayscale
         gray = cv2.cvtColor(np.moveaxis(observation, 0, -1), cv2.COLOR_BGR2GRAY)
         #resize image to make it smaller. reduces amount of pixels to process
+        #original size was (240,360,3). The 3 is for color channels RGB where grayscaling needs only 1 channel.
         resize = cv2.resize(gray, (160,100), interpolation=cv2.INTER_CUBIC)
         state = np.reshape(resize, (100,160,1))
         return state
-        
+
     #restarts the game
     def reset(self):
         self.game.new_episode()
