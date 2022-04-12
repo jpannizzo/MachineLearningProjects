@@ -1,9 +1,5 @@
-'''
-TOTAL TIMESTEPS RUN SO FAR: 5000000
-TOTAL TIME RUN: 32 hrs
-'''
 #for string to dict
-import ast
+#import ast
 
 #Import the game, joypad, and simplified controls
 import gym_super_mario_bros
@@ -15,7 +11,7 @@ from gym.wrappers import GrayScaleObservation
 #Import Vectorization Wrappers and Frame Stacker Wrapper
 from stable_baselines3.common.vec_env import VecFrameStack, DummyVecEnv
 # Import Matplotlib to show the impact of framestacking
-from matplotlib import pyplot as plt
+#from matplotlib import pyplot as plt
 #Display for monitoring
 from stable_baselines3.common.monitor import Monitor
 # Bring in the eval policy method for metric calculation
@@ -27,7 +23,7 @@ import os
 # import PPO algo
 from stable_baselines3 import PPO
 # import base callbacks for saving models
-from stable_baselines3.common.callbacks import EvalCallback, CallbackList
+#from stable_baselines3.common.callbacks import EvalCallback, CallbackList
 # import for improved saving model code
 from TrainAndLoggingCallback import TrainAndLoggingCallback
 
