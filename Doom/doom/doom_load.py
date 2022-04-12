@@ -9,7 +9,7 @@ from stable_baselines3 import PPO
 env = VizDoomGym(render=True)
 
 #load model
-model = PPO.load('./train/best_model_640000')
+model = PPO.load('./train/latestmodel')
 
 # Evaluate mean reward for 10 games
 mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=100)

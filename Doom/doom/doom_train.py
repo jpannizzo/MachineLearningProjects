@@ -11,7 +11,9 @@ from stable_baselines3.common.evaluation import evaluate_policy
 #Display for monitoring
 from stable_baselines3.common.monitor import Monitor
 
-CHECKPOINT_DIR = './train/train_basic'
+#callback for basic cfg
+CHECKPOINT_DIR= './train/train_basic'
+#log dir for basic cfg
 LOG_DIR = './logs/log_basic'
 
 callback = TrainAndLoggingCallback(check_freq=10000, save_path=CHECKPOINT_DIR)

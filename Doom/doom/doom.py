@@ -52,10 +52,13 @@ class VizDoomGym(Env):
 
         #get return variables
         #if there is no current game state (game over screen) then return 0s so env does not crash
+        #TODO: Update info to include {Health}
         if self.game.get_state():
             state = self.game.get_state().screen_buffer
             state = self.grayscale(state)
+            #get ammo game variable
             ammo = self.game.get_state().game_variables[0]
+            #game info basic cfg
             info = {"ammo":ammo}
         else:
             state = np.zeros(self.observation_space.shape)
