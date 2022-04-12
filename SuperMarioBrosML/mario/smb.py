@@ -1,6 +1,6 @@
 '''
-TOTAL TIMESTEPS RUN SO FAR: 100000
-TOTAL TIME RUN: .5 hrs
+TOTAL TIMESTEPS RUN SO FAR: 5000000
+TOTAL TIME RUN: 32 hrs
 '''
 #for string to dict
 import ast
@@ -68,20 +68,20 @@ callback = TrainAndLoggingCallback(check_freq=20000, save_path=CHECKPOINT_DIR)
 #setup eval callback to evaluate model as it runs
 #When using HPO like optuna the model loaded in will have episode length mean and episode reward mean from the study that occured in param_tuning.py 
 #Those kick in at ~15k timesteps so this eval callback might not be necessary OR might be better to make them less frequent and increase the number of eval episodes
-eval_callback = EvalCallback(env, log_path=LOG_DIR, eval_freq=50000, deterministic=True, render=False)
+#eval_callback = EvalCallback(env, log_path=LOG_DIR, eval_freq=100000, deterministic=True, render=False, n_eval_episodes=10)
 #callback list
-callback_list = CallbackList([callback, eval_callback])
+#callback_list = CallbackList([callback, eval_callback])
 
 d = os.path.dirname(os.getcwd())
 
 #load optimization study
-param_file = d+"\\mario\\optimization\\logs\\best_params.txt"
-with open(param_file, 'r') as f:
-    string_params = f.read()
+#param_file = d+"\\mario\\optimization\\logs\\best_params.txt"
+#with open(param_file, 'r') as f:
+#    string_params = f.read()
 #convert from string to dict
-model_params = ast.literal_eval(string_params)
+#model_params = ast.literal_eval(string_params)
 #remove truncated runs
-model_params['n_steps'] = model_params['n_steps']//64*64
+#model_params['n_steps'] = model_params['n_steps']//64*64
 
 #create PPO model
 '''
@@ -100,12 +100,12 @@ CnnPolicy is very good at processing images
 #custom_objects = { 'learning_rate': 0.00001}
 
 #create initial model + model_params
-model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, device='cuda', **model_params)
+#model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, device='cuda', **model_params)
 #load opt model, replace this for continued training
-model.load(OPT_DIR+"trial_19_best_model", env)
+model = PPO.load("C:\\repos\MachineLearningProjects\SuperMarioBrosML\mario\completed\Agent2\cont_PPO_2_TimestepsRun_4900000", env)
 
 #train the AI model
-model.learn(total_timesteps=5000000, callback=callback_list)
+model.learn(total_timesteps=3650000, callback=callback)
 model.save('/train/latestmodel')
 
 #run the game to show the latest model

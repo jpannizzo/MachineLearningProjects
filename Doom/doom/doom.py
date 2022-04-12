@@ -17,6 +17,7 @@ import cv2
 # Import Matplotlib to show the impact of framestacking
 from matplotlib import pyplot as plt
 
+#Environment that can be called. All functions can be utilized except render. Use VizDooms built in renderer
 class VizDoomGym(Env):
     #Start env function
     def __init__(self, render=False):
@@ -64,11 +65,12 @@ class VizDoomGym(Env):
     def grayscale(self, observation):
         gray = cv2.cvtColor(np.moveaxis(observation, 0, -1), cv2.COLOR_BGR2GRAY)
         return gray
-    #this is what happens when we start a new game
+    #restarts the game
     def reset(self):
         self.game.new_episode()
         return self.game.get_state().screen_buffer
 
+#example random gamestate below
 game = DoomGame()
 game.load_config('./github/ViZDoom/scenarios/basic.cfg')
 game.init()
