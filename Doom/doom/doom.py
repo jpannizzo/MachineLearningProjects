@@ -1,9 +1,7 @@
 #import random for action sampling
-import random
+#import random
 #import vizdoom for game env
 from  vizdoom import *
-#Import time for sleeping
-import time
 #import numpy for identity matrix
 import numpy as np
 
@@ -21,6 +19,8 @@ from matplotlib import pyplot as plt
 class VizDoomGym(Env):
     #Start env function
     def __init__(self, render=False):
+        #inherit from Env
+        super().__init__()
         #Setup Game
         self.game = DoomGame()
         self.game.load_config('./github/ViZDoom/scenarios/basic.cfg')
@@ -35,11 +35,17 @@ class VizDoomGym(Env):
         self.game.init()
 
         #Create action/observation space
-        self.observation_space = Box(low=0, high=255, shape=(3,240,320), dtype=np.uint8)
+        self.observation_space = Box(low=0, high=255, shape=(100,160,1), dtype=np.uint8)
         self.action_space=Discrete(3)
+
     #this is how we take a step in the env
     def step(self, action):
         #Specify action and take step
+        '''
+        left = [1,0,0]
+        right = [0,1,0]
+        shoot = [0,0,1]
+        '''
         actions = np.identity(3, dtype=np.uint8)
         reward = self.game.make_action(actions[action])
 
@@ -48,28 +54,41 @@ class VizDoomGym(Env):
         if self.game.get_state():
             state = self.game.get_state().screen_buffer
             state = self.grayscale(state)
-            info = self.game.get_state().game_variables
+            ammo = self.game.get_state().game_variables[0]
+            info = {"ammo":ammo}
         else:
             state = np.zeros(self.observation_space.shape)
             info = 0
 
+        info = {"info": info}
         done = self.game.is_episode_finished()
+
         return state, reward, done, info
+
     #call to close down the game
     def close(self):
         self.game.close()
+
     #predefined in VizDoom. this is how to render the game or env
     def render():
         pass
+
     #grayscale the game frame and resize it
     def grayscale(self, observation):
+        #recolor to grayscale
         gray = cv2.cvtColor(np.moveaxis(observation, 0, -1), cv2.COLOR_BGR2GRAY)
-        return gray
+        #resize image to make it smaller. reduces amount of pixels to process
+        resize = cv2.resize(gray, (160,100), interpolation=cv2.INTER_CUBIC)
+        state = np.reshape(resize, (100,160,1))
+        return state
+        
     #restarts the game
     def reset(self):
         self.game.new_episode()
-        return self.game.get_state().screen_buffer
+        state = self.game.get_state().screen_buffer
+        return self.grayscale(state)
 
+'''
 #example random gamestate below
 game = DoomGame()
 game.load_config('./github/ViZDoom/scenarios/basic.cfg')
@@ -77,11 +96,6 @@ game.init()
 
 #create actions
 actions = np.identity(3, dtype=np.uint8)
-'''
-left = [1,0,0]
-right = [0,1,0]
-shoot = [0,0,1]
-'''
 episodes = 10
 for episode in range(episodes):
     game.new_episode()
@@ -98,3 +112,4 @@ for episode in range(episodes):
         print('reward: ', reward)
     #print total result
     print('Result: ', game.get_total_reward())
+    '''

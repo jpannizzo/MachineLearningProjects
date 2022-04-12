@@ -1,3 +1,5 @@
 vizdoom
 gym
 matplotlib
+pytorch
+stable-baselines3[extra]

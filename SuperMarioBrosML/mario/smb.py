@@ -62,7 +62,7 @@ env = VecFrameStack(env, 4, channels_order='last')
 
 #setup model saving callback
 #saves every XX,000 steps. send env for eval callback
-callback = TrainAndLoggingCallback(check_freq=20000, save_path=CHECKPOINT_DIR)
+callback = TrainAndLoggingCallback(check_freq=10000, save_path=CHECKPOINT_DIR)
 #setup eval callback to evaluate model as it runs
 #When using HPO like optuna the model loaded in will have episode length mean and episode reward mean from the study that occured in param_tuning.py 
 #Those kick in at ~15k timesteps so this eval callback might not be necessary OR might be better to make them less frequent and increase the number of eval episodes
@@ -100,13 +100,13 @@ CnnPolicy is very good at processing images
 #create initial model + model_params
 #model = PPO('CnnPolicy', env, verbose=1, tensorboard_log=LOG_DIR, device='cuda', **model_params)
 #load opt model, replace this for continued training
-model = PPO.load("C:\\repos\MachineLearningProjects\SuperMarioBrosML\mario\completed\Agent2\cont_PPO_2_TimestepsRun_4900000", env)
+model = PPO.load("./completed/Agent1/completed_PPO_16_cont_RuntimeSteps_3050000", env)
 
 #add evalution so mean reward/mean len is tracked for non PPO models
 mean_reward, _ = evaluate_policy(model, env, n_eval_episodes=20)
 
 #train the AI model
-model.learn(total_timesteps=3650000, callback=callback)
+model.learn(total_timesteps=100000, callback=callback)
 model.save('./train/latestmodel')
 
 #run the game to show the latest model

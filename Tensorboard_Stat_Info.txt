@@ -1,0 +1,22 @@
+Breakdown of tensorboard stat meanings
+
+rollout/
+	ep_len_mean = average time to finish episode
+	ep_rew_mean = average episode reward
+time/
+	fps = frames per second
+	iterations = total evaluations? number of episodes?
+	time_elapsed = total runtime
+	total_timesteps = total frames processed
+train/
+	approx_kl = PPO measures current agent against old agent. kl is a measurement of similarities from old agent to current agent. If this spikes in either direction it indicates unstable learning.
+	clip_fraction = % of occurences that had to be clipped(discarded) due to high divergence in kl. Clipping is decided based on clip_range.
+	clip_range = The range at which it will clip an action 
+	entropy_loss = 
+	explained_variance = a measure of how well critic model can explain the variance in our value function. + means critic is predicting at higher detail, - means critic is predicting in lower detail
+	learning_rate = rate in which the agent model will learn. higher number means learning faster but can cause an unstable AI, lower rates are more stable but are slower learners and if too slow AI might take too long to learn task.
+	loss = 
+	n_updates = updates made to actor/critic networks
+	policy_gradient_loss = how well actor agent takes actions to capitalize on its advantage. Ideally this should decrease and will correspond with value_loss decreasing.
+	value_loss = how well our agent is able to predict current return based on current state in actions. This should decrease.
+	
