@@ -1,5 +1,5 @@
 ## MachineLearningProjects
-personal machine learning projects to tinker with various ML technologies. more folders will be created/updated as more projects are added
+Personal machine learning projects to tinker with various ML technologies. More folders will be created/updated as more projects are added.
 
 ### SuperMarioBrosML
 This program uses Reinforced learning and HPO to train an AI to progress as far as possible through the original super mario bros game. Utilizes Pytorch, Tensorflow, Stable_Baselines3, nes_py, gym, and Optuna. 
