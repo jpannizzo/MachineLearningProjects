@@ -11,6 +11,3 @@ This could be automated and dynamic parameters could be calculated and loaded pr
 Even without automation, manually updating the parameters using an HPO should create a better learning environment. 
 The tradeoff being the amount of time needed to run hyper parameterized testing every time mean rewards decline for extended periods of time.
 Ultimately, Agent_1 performed better over the same period of time with a significantly lower training rate and n_step.
-
-To Do:
--Add Agent_2 zip via github large file transfer
