@@ -6,7 +6,3 @@ This program uses Reinforced learning and HPO to train an AI to progress as far 
 
 ### Doom
 Currently a work in progress. This program utilizes Reinforced Learning and Curriculm Learning to train an AI the importance of different aspects of the game Doom. It utilizes VizDoom (https://github.com/mwydmuch/ViZDoom) for the rendering of the game as well as its configuration files that are used to train different learning curriculms. Currently only suited to perform in basic configurations. Will be improved to work with more advanced configurations as well as the full Doom game. Utilizes Pytorch, Tensorflow, Stable_Baselines3, gym, and vizdoom.
-
-### StreetFighter2
-Project directory created. Currently a work in progress. Purpose of the project is to utilize reinforced learning and HPO to create multiple agents that can
-complete the Street Fighter 2 single player game. Once those agents are trained they will be trained against each other to improve AI vs human players in multiplayer games.
